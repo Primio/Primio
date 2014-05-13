@@ -1,35 +1,52 @@
 Building on Linux
 ===============
 
-To install the required dependencies, run the following command:
+To build the only daemon, run the following commands
+$ sudo apt-get install git-core build-essential libssl-dev libboost-all-dev libdb5.1-dev libdb5.1++-dev libgtk2.0-dev libminiupnpc-dev mingw32 synaptic libdb++-dev miniupnpc
 
-$ sudo apt-get install git-core build-essential libssl-dev libboost-all-dev libdb5.1-dev libdb5.1++-dev libgtk2.0-dev libminiupnpc-dev qt4-qmake mingw32 synaptic qt-sdk qt4-dev-tools libqt4-dev libqt4-core libqt4-gui libdb++-dev miniupnpc
+First build cryptopp:
+$ cd Primio/src/cryptopp
+$ make static test dynamic
 
-Then grab the latest version of the source code from Github
+Install it into your usr/local/lib/
+$ make install
 
+Go back to the /src/ folder with 
+$ cd ..
 
+Build leveldb
+$ cd leveldb
 
-To build the daemon, run the following commands
+Give execution rights to the platform detection script
+$ chmod +x build_detect_platform
 
-$ cd Primio/src
+Now build the libraries
+$ make libleveldb.a libmemenv.a
 
+Now navigate back to the /src/ folder
+$ cd ..
+
+And make the daemon with the following command
 $ make -f makefile.unix
 
 Optionally, debugging symbols can be removed from the binary to reduce it's size. This can be done using strip.
-
-$ strip Primiod
+$ strip ./primiod
 
 Then, to build the GUI, run the following commands:
+$ sudo apt-get install git-core build-essential libssl-dev libboost-all-dev libdb5.1-dev libdb5.1++-dev libgtk2.0-dev libminiupnpc-dev qt4-qmake mingw32 synaptic qt-sdk qt4-dev-tools libqt4-dev libqt4-core libqt4-gui libdb++-dev miniupnpc
 
+Navigate to the /primio/ folder
 $ cd ..
 
+To create a makefile the following command will have to be entered
 $ qmake
 
+When it is done configuring, use the following command to create the Qt version of the wallet
 $ make
+
 
 Troubleshooting:
 -------------
-
 Building miniupnpc
 ----------------
 
@@ -43,19 +60,4 @@ $ cd miniupnpc-1.6
 	
 $ make
 
-$	make install
-
-Cleaning the build:
-----------------=
-
-If you have to clean your build environment you may have to rebuild LevelDB manually. This can be done using:
-
-$ cd src/leveldb
-
-$ chmod +x build_detect_platform
-
-$ ./build_detect_platform
-
-Ignore the usage errors (it still builds the relevent file) and now run:
-
-$ make libleveldb.a libmemenv.a
+$ make install
